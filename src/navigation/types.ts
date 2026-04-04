@@ -7,6 +7,7 @@ export type RootStackParamList = {
   ForgotPassword: undefined;
   Otp: undefined;
   ResetPassword: undefined;
+  Home: undefined;
 };
 
 export type RootStackNavigationProp =

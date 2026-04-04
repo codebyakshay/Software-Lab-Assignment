@@ -11,6 +11,14 @@ import {
   signOut as firebaseSignOut,
 } from "@react-native-firebase/auth";
 import * as AppleAuthentication from "expo-apple-authentication";
+import api from "@/api/api";
+import { ENDPOINT } from "@/api/endpoint";
+import { 
+  LoginRequest, 
+  LoginResponse, 
+  RegisterRequest, 
+  RegisterResponse 
+} from "@/types/auth";
 
 export class AuthService {
   /**
@@ -97,6 +105,44 @@ export class AuthService {
       return signInWithCredential(auth, appleCredential);
     } catch (error) {
       console.error("Apple Sign-In Error:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Register a new user
+   */
+  static async register(data: RegisterRequest): Promise<RegisterResponse> {
+    try {
+      const response = await api.post<any, RegisterResponse>(ENDPOINT.REGISTER, data);
+      
+      // Handle both string "false" and boolean false success from the API
+      if (response.success === "false" || response.success === false) {
+        throw new Error(response.message || "Registration failed");
+      }
+      
+      return response;
+    } catch (error: any) {
+      console.error("Registration Error:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Login an existing user
+   */
+  static async login(data: LoginRequest): Promise<LoginResponse> {
+    try {
+      const response = await api.post<any, LoginResponse>(ENDPOINT.LOGIN, data);
+      
+      // Handle both string "false" and boolean false success from the API
+      if (response.success === "false" || response.success === false) {
+        throw new Error(response.message || "Login failed");
+      }
+      
+      return response;
+    } catch (error: any) {
+      console.error("Login Error:", error);
       throw error;
     }
   }
