@@ -4,6 +4,10 @@ export type RootStackParamList = {
   Onboarding: undefined;
   Login: undefined;
   Signup: undefined;
+  ForgotPassword: undefined;
+  Otp: undefined;
+  ResetPassword: undefined;
 };
 
-export type RootStackNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+export type RootStackNavigationProp =
+  NativeStackNavigationProp<RootStackParamList>;

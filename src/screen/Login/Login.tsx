@@ -23,6 +23,7 @@ const Login = observer(function Login() {
     handleLogin,
     handleSocialLogin,
     navigateToSignup,
+    navigateToForgotPassword,
   } = useLogin();
 
   return (
@@ -52,6 +53,7 @@ const Login = observer(function Login() {
               placeholderText={locale.field.password}
               rightText={locale.field.forgot}
               rightTextColor={color.brand}
+              onRightTextPress={navigateToForgotPassword}
               value={password}
               onChangeText={setPassword}
               secureTextEntry

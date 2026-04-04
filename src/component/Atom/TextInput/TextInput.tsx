@@ -6,6 +6,7 @@ import {
   Text,
   ColorValue,
   TextInputProps as RNTextInputProps,
+  TouchableOpacity,
 } from "react-native";
 import { color } from "@/constant/Color";
 import { LucideProps } from "lucide-react-native";
@@ -17,6 +18,7 @@ interface TextInputProps extends RNTextInputProps {
   placeholderText: string;
   rightText?: string;
   rightTextColor?: ColorValue;
+  onRightTextPress?: () => void;
 }
 
 export default function TextInput({
@@ -24,6 +26,7 @@ export default function TextInput({
   placeholderText,
   rightText,
   rightTextColor,
+  onRightTextPress,
   value,
   onChangeText,
   secureTextEntry,
@@ -49,13 +52,17 @@ export default function TextInput({
       </View>
 
       {rightText && (
-        <View style={styles.rightIconContainer}>
+        <TouchableOpacity
+          style={styles.rightIconContainer}
+          onPress={onRightTextPress}
+          activeOpacity={0.7}
+        >
           <Text
             style={{ color: rightTextColor, fontSize: 12, fontWeight: "600" }}
           >
             {rightText}
           </Text>
-        </View>
+        </TouchableOpacity>
       )}
     </View>
   );

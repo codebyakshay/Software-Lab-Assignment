@@ -55,7 +55,8 @@ export function useLogin() {
     }
   };
 
-  const navigateToSignup = () => navigation.navigate("Signup");
+  const navigateToSignup = () => navigation.replace("Signup");
+  const navigateToForgotPassword = () => navigation.replace("ForgotPassword");
 
   return {
     email,
@@ -65,5 +66,6 @@ export function useLogin() {
     handleLogin,
     handleSocialLogin,
     navigateToSignup,
+    navigateToForgotPassword,
   };
 }
