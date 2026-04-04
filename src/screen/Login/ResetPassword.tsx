@@ -19,6 +19,7 @@ export default function ResetPassword() {
     setConfirmPassword,
     handleSubmit,
     navigateToLogin,
+    isLoading,
   } = useResetPassword();
 
   return (
@@ -56,6 +57,7 @@ export default function ResetPassword() {
               title={locale.submit}
               bgColor={color.brand}
               onPress={handleSubmit}
+              isLoading={isLoading}
             />
           </View>
         </ScrollView>

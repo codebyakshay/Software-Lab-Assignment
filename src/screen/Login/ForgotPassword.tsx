@@ -12,7 +12,7 @@ import ScreenWrapper from "@/component/Molecule/ScreenWrapper/ScreenWrapper";
 import AuthHeader from "@/component/Molecule/AuthHeader/AuthHeader";
 
 export default function ForgotPassword() {
-  const { phoneNumber, setPhoneNumber, handleSendCode, navigateToLogin } =
+  const { phoneNumber, setPhoneNumber, handleSendCode, navigateToLogin, isLoading } =
     useForgotPassword();
 
   return (
@@ -42,6 +42,7 @@ export default function ForgotPassword() {
               title={locale.sendCode}
               bgColor={color.brand}
               onPress={handleSendCode}
+              isLoading={isLoading}
             />
           </View>
         </ScrollView>

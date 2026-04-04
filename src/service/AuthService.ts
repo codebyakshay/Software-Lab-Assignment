@@ -13,11 +13,17 @@ import {
 import * as AppleAuthentication from "expo-apple-authentication";
 import api from "@/api/api";
 import { ENDPOINT } from "@/api/endpoint";
-import { 
-  LoginRequest, 
-  LoginResponse, 
-  RegisterRequest, 
-  RegisterResponse 
+import {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  VerifyOtpRequest,
+  VerifyOtpResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
 } from "@/types/auth";
 
 export class AuthService {
@@ -38,7 +44,7 @@ export class AuthService {
   static async signInWithGoogle() {
     try {
       const auth = getAuth();
-      
+
       // Check if your device supports Google Play
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,
@@ -81,7 +87,7 @@ export class AuthService {
   static async signInWithApple() {
     try {
       const auth = getAuth();
-      
+
       if (Platform.OS !== "ios") {
         throw new Error("Apple Sign-In is only supported on iOS");
       }
@@ -114,13 +120,16 @@ export class AuthService {
    */
   static async register(data: RegisterRequest): Promise<RegisterResponse> {
     try {
-      const response = await api.post<any, RegisterResponse>(ENDPOINT.REGISTER, data);
-      
+      const response = await api.post<any, RegisterResponse>(
+        ENDPOINT.REGISTER,
+        data,
+      );
+
       // Handle both string "false" and boolean false success from the API
       if (response.success === "false" || response.success === false) {
         throw new Error(response.message || "Registration failed");
       }
-      
+
       return response;
     } catch (error: any) {
       console.error("Registration Error:", error);
@@ -134,15 +143,91 @@ export class AuthService {
   static async login(data: LoginRequest): Promise<LoginResponse> {
     try {
       const response = await api.post<any, LoginResponse>(ENDPOINT.LOGIN, data);
-      
+
       // Handle both string "false" and boolean false success from the API
       if (response.success === "false" || response.success === false) {
         throw new Error(response.message || "Login failed");
       }
-      
+
       return response;
     } catch (error: any) {
       console.error("Login Error:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Request an OTP for password recovery
+   */
+  static async forgotPassword(
+    data: ForgotPasswordRequest,
+  ): Promise<ForgotPasswordResponse> {
+    try {
+      console.log("Forgot Password Request:", data);
+      const response = await api.post<any, ForgotPasswordResponse>(
+        ENDPOINT.FORGOT_PASSWORD,
+        data,
+      );
+      console.log("Forgot Password Response:", response);
+
+      // Handle both string "false" and boolean false success from the API
+      if (response.success === "false" || response.success === false) {
+        throw new Error(response.message || "Failed to send OTP");
+      }
+
+      return response;
+    } catch (error: any) {
+      console.error("Forgot Password Error:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Verify the OTP for password recovery
+   */
+  static async verifyOtp(data: VerifyOtpRequest): Promise<VerifyOtpResponse> {
+    try {
+      console.log("Verify OTP Request:", data);
+      const response = await api.post<any, VerifyOtpResponse>(
+        ENDPOINT.VERIFY_OTP,
+        data,
+      );
+      console.log("Verify OTP Response:", response);
+
+      // Handle both string "false" and boolean false success from the API
+      if (response.success === "false" || response.success === false) {
+        throw new Error(response.message || "Failed to verify OTP");
+      }
+
+      return response;
+    } catch (error: any) {
+      console.error("Verify OTP Error:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Reset the password with the verified token
+   */
+  static async resetPassword(
+    data: ResetPasswordRequest,
+  ): Promise<ResetPasswordResponse> {
+    try {
+      console.log("Reset Password Request:", data);
+      const response = await api.post<any, ResetPasswordResponse>(
+        ENDPOINT.RESET_PASSWORD,
+        data,
+      );
+      console.log("Reset Password Response:", response);
+
+      // Handle both string "false" and boolean false success from the API
+      if (response.success === "false" || response.success === false) {
+        throw new Error(response.message || "Failed to reset password");
+      }
+
+      return response;
+    } catch (error: any) {
+      console.error("Reset Password Error:", error);
       throw error;
     }
   }
@@ -154,7 +239,7 @@ export class AuthService {
     try {
       const auth = getAuth();
       await firebaseSignOut(auth);
-      
+
       if (await GoogleSignin.hasPreviousSignIn()) {
         await GoogleSignin.signOut();
       }

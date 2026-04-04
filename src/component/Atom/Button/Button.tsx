@@ -1,4 +1,4 @@
-import { Animated, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Animated, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { typography } from "@/constant/Typography";
 
@@ -9,16 +9,22 @@ interface ButtonProps {
   title: string;
   bgColor: string | Animated.AnimatedInterpolation<string | number>;
   onPress?: () => void;
+  isLoading?: boolean;
 }
 
-export default function Button({ title, bgColor, onPress }: ButtonProps) {
+export default function Button({ title, bgColor, onPress, isLoading }: ButtonProps) {
   return (
     <AnimatedTouchableOpacity
       style={[styles.button, { backgroundColor: bgColor as any }]}
       activeOpacity={0.8}
       onPress={onPress}
+      disabled={isLoading}
     >
-      <Text style={styles.text}>{title}</Text>
+      {isLoading ? (
+        <ActivityIndicator color="#fff" />
+      ) : (
+        <Text style={styles.text}>{title}</Text>
+      )}
     </AnimatedTouchableOpacity>
   );
 }

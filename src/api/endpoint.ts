@@ -6,7 +6,7 @@ export const ENDPOINT = {
   LOGIN: "/user/login",
   
   // Password Recovery
-  FORGOT_PASSWORD: "/user/forget-password",
+  FORGOT_PASSWORD: "/user/forgot-password",
   VERIFY_OTP: "/user/verify-otp",
   RESET_PASSWORD: "/user/reset-password",
 } as const;

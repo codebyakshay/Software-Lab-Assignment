@@ -13,6 +13,30 @@ export interface RegisterResponse extends ApiResponse {
   token?: string;
 }
 
+export interface ForgotPasswordRequest {
+  mobile: string;
+}
+
+export interface ForgotPasswordResponse extends ApiResponse {}
+
+export interface VerifyOtpRequest {
+  otp: string;
+}
+
+export interface VerifyOtpResponse extends ApiResponse {
+  token?: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  password: string;
+  cpassword: string;
+}
+
+export interface ResetPasswordResponse extends ApiResponse {
+  is_verified?: string | boolean;
+}
+
 export interface LoginRequest {
   email: string;
   password?: string;
