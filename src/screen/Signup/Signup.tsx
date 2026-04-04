@@ -1,40 +1,32 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AtSign, LockKeyhole, User, Phone } from "lucide-react-native";
 import { observer } from "mobx-react-lite";
-import { locale } from "@/constant/Strings";
 import { color } from "@/constant/Color";
-import { family } from "@/constant/Typography";
+
+import ScreenWrapper from "@/component/Molecule/ScreenWrapper/ScreenWrapper";
 import { useSignup } from "./useSignup";
 
-import Button from "@/component/Atom/Button/Button";
-import TextInput from "@/component/Atom/TextInput/TextInput";
-import ScreenWrapper from "@/component/Molecule/ScreenWrapper/ScreenWrapper";
-import SocialAuthGroup from "@/component/Molecule/SocialAuthGroup/SocialAuthGroup";
-import AuthHeader from "@/component/Molecule/AuthHeader/AuthHeader";
+// Import Step Components
+import SignupStep1 from "./components/SignupStep1";
+import SignupStep2 from "./components/SignupStep2";
+import SignupStep3 from "./components/SignupStep3";
+import SignupStep4 from "./components/SignupStep4";
+import SignupDone from "./components/SignupDone";
 
 const Signup = observer(function Signup() {
   const {
-    fullName,
-    setFullName,
-    email,
-    setEmail,
-    phone,
-    setPhone,
-    password,
-    setPassword,
-    reEnterPassword,
-    setReEnterPassword,
-    handleSignup,
+    step,
+    nextStep,
+    prevStep,
     handleSocialLogin,
     navigateToLogin,
+    handleSignup,
+    handleFinish,
+    credentials,
+    farm,
+    verification,
+    hours,
   } = useSignup();
 
   return (
@@ -44,74 +36,42 @@ const Signup = observer(function Signup() {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <AuthHeader
-            stepIndicator="Signup 1 of 4"
-            screenTitle={locale.signup.title}
-          />
-
-          <SocialAuthGroup
-            onSocialPress={handleSocialLogin}
-            title={locale.signup.orSignupWith}
-            titlePosition="bottom"
-          />
-
-          <View style={styles.fieldGrp}>
-            <TextInput
-              LeftIcon={User}
-              placeholderText={locale.field.fullName}
-              value={fullName}
-              onChangeText={setFullName}
+          {step === 1 && (
+            <SignupStep1
+              {...credentials}
+              handleSocialLogin={handleSocialLogin}
+              navigateToLogin={navigateToLogin}
+              nextStep={nextStep}
             />
+          )}
 
-            <TextInput
-              LeftIcon={AtSign}
-              placeholderText={locale.field.email}
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
+          {step === 2 && (
+            <SignupStep2
+              {...farm}
+              prevStep={prevStep}
+              nextStep={nextStep}
             />
+          )}
 
-            <TextInput
-              LeftIcon={Phone}
-              placeholderText={locale.field.phone}
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
+          {step === 3 && (
+            <SignupStep3
+              {...verification}
+              prevStep={prevStep}
+              nextStep={nextStep}
             />
+          )}
 
-            <TextInput
-              LeftIcon={LockKeyhole}
-              placeholderText={locale.field.password}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
+          {step === 4 && (
+            <SignupStep4
+              {...hours}
+              prevStep={prevStep}
+              handleSignup={handleSignup}
             />
+          )}
 
-            <TextInput
-              LeftIcon={LockKeyhole}
-              placeholderText="Re-enter Password"
-              value={reEnterPassword}
-              onChangeText={setReEnterPassword}
-              secureTextEntry
-            />
-          </View>
-
-          <View style={styles.footer}>
-            <TouchableOpacity onPress={navigateToLogin}>
-              <Text style={styles.loginLink}>
-                {locale.login.subTitleForgot2}
-              </Text>
-            </TouchableOpacity>
-
-            <View style={styles.btnWrapper}>
-              <Button
-                title="Continue"
-                bgColor={color.brand}
-                onPress={handleSignup}
-              />
-            </View>
-          </View>
+          {step === 5 && (
+            <SignupDone onDone={handleFinish} />
+          )}
         </ScrollView>
       </SafeAreaView>
     </ScreenWrapper>
@@ -128,23 +88,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 40,
-  },
-  fieldGrp: {
-    gap: 20,
-    marginTop: 32,
-  },
-  footer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 80,
-  },
-  loginLink: {
-    fontFamily: family.medium,
-    fontSize: 14,
-    textDecorationLine: "underline",
-  },
-  btnWrapper: {
-    width: "60%",
+    flexGrow: 1,
   },
 });

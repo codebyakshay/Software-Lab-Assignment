@@ -12,7 +12,7 @@ import { color } from "@/constant/Color";
 import { LucideProps } from "lucide-react-native";
 
 interface TextInputProps extends RNTextInputProps {
-  LeftIcon: React.ForwardRefExoticComponent<
+  LeftIcon?: React.ForwardRefExoticComponent<
     LucideProps & React.RefAttributes<SVGSVGElement>
   >;
   placeholderText: string;
@@ -37,7 +37,10 @@ export default function TextInput({
   return (
     <View style={styles.container}>
       <TI
-        style={styles.textInputStyle}
+        style={[
+          styles.textInputStyle,
+          { paddingLeft: LeftIcon ? 16 + 35 : 16 },
+        ]}
         placeholder={placeholderText}
         placeholderTextColor={color.placeholderTextColor}
         value={value}
@@ -47,9 +50,11 @@ export default function TextInput({
         autoCapitalize={autoCapitalize}
         {...props}
       />
-      <View style={styles.leftIconContainer}>
-        <LeftIcon color={color.placeholderTextColor} size={20} />
-      </View>
+      {LeftIcon && (
+        <View style={styles.leftIconContainer}>
+          <LeftIcon color={color.placeholderTextColor} size={20} />
+        </View>
+      )}
 
       {rightText && (
         <TouchableOpacity
@@ -81,7 +86,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     borderRadius: 8,
-    paddingLeft: 16 + 35,
+    paddingRight: 16,
     fontSize: 14,
   },
 

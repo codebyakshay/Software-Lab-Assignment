@@ -31,6 +31,17 @@ export const locale = {
     subTitle1: "Already have an account?",
     subTitle2: "Login",
     orSignupWith: "or signup with",
+    verificationTitle: "Verification",
+    verificationSubtitle:
+      "Attached proof of Department of Agriculture registrations i.e. Florida Fresh, USDA Approved, USDA Organic",
+    attachProof: "Attach proof of registration",
+    businessHoursTitle: "Business Hours",
+    businessHoursSubtitle:
+      "Choose the hours your farm is open for pickups. This will allow customers to order deliveries.",
+    farmInfoTitle: "Farm Info",
+    signupDoneTitle: "You’re all done!",
+    signupDoneSubtitle:
+      "Hang tight! We are currently reviewing your account and will follow up with you in 2-3 business days. In the meantime, you can setup your inventory.",
   },
   field: {
     email: "Email Address",
@@ -39,7 +50,9 @@ export const locale = {
     phone: "Phone Number",
     fullName: "Full Name",
     businessName: "Business Name",
+    informalName: "Informal Name",
     address: "Address",
+    street: "Street Address",
     city: "City",
     state: "State",
     zipCode: "Zip Code",

@@ -45,7 +45,9 @@ export default function OtpInput({ length = 5, onOtpChange }: OtpInputProps) {
       {otp.map((digit, index) => (
         <TextInput
           key={index}
-          ref={(ref) => (inputRefs.current[index] = ref!)}
+          ref={(ref) => {
+            inputRefs.current[index] = ref!;
+          }}
           style={[styles.inputBox, digit !== "" && styles.inputBoxActive]}
           maxLength={1}
           keyboardType="number-pad"
