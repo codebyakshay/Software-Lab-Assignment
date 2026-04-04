@@ -8,7 +8,7 @@ import OnboardingContentCard from "@/component/Molecule/OnboardingContentCard/On
 import ScreenWrapper from "@/component/Molecule/ScreenWrapper/ScreenWrapper";
 import { useOnboarding } from "./useOnboarding";
 
-const Onboarding = observer(() => {
+const Onboarding = observer(function Onboarding() {
   const {
     activeIndex,
     flatListRef,
@@ -28,7 +28,7 @@ const Onboarding = observer(() => {
       <View style={styles.illustrationArea}>
         <Animated.FlatList
           ref={flatListRef}
-          data={data}
+          data={data.onboarding}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
@@ -51,7 +51,7 @@ const Onboarding = observer(() => {
       <OnboardingContentCard
         title={activeItem.slideTitle}
         subtitle={activeItem.slideSubTitle}
-        totalSlides={data.length}
+        totalSlides={data.onboarding.length}
         activeIndex={activeIndex}
         ctaBtnTitle={locale.onBoarding.ctaBtnTitle}
         ctaBgColor={ctaBackgroundColor}

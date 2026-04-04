@@ -13,7 +13,9 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.razer-ak.SowLab-Assignment"
+      "bundleIdentifier": "com.codebyakshay.sowLab.assignment",
+      "googleServicesFile": "./src/firebase/GoogleService-Info.plist",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -21,10 +23,36 @@
         "backgroundColor": "#ffffff"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.razerak.SowLabAssignment"
+      "package": "com.codebyakshay.sowLab.assignment",
+      "googleServicesFile": "./src/firebase/google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "./plugins/withFirebaseFix",
+      "./plugins/withPushNotifications",
+      "expo-font",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/messaging",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.47142423047-et8ce6pj8pr781quj0i9084d0m2o04ks"
+        }
+      ],
+      "expo-apple-authentication",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static",
+            "forceStaticLinking": ["RNFBApp", "RNFBMessaging", "RNFBAuth"]
+          }
+        }
+      ],
+      "./plugins/withFirebaseFix"
+    ]
   }
 }

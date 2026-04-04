@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
+import { typography } from "@/constant/Typography";
 
 interface SecondaryBtnProps {
   title: string;
@@ -16,9 +17,6 @@ export default function SecondaryBtn({ title, onPress }: SecondaryBtnProps) {
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#1A1A1A",
-    textDecorationLine: "underline",
+    ...typography.secondaryBtn,
   },
 });

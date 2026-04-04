@@ -1,5 +1,6 @@
-import { Animated, StyleProp, StyleSheet, ViewStyle } from "react-native";
+import { Animated, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import React, { PropsWithChildren } from "react";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 interface ScreenWrapperProps extends PropsWithChildren {
   style?: StyleProp<ViewStyle> | any;
@@ -7,7 +8,13 @@ interface ScreenWrapperProps extends PropsWithChildren {
 
 export default function ScreenWrapper({ children, style }: ScreenWrapperProps) {
   return (
-    <Animated.View style={[styles.screen, style]}>{children}</Animated.View>
+    <KeyboardAwareScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps="handled"
+      bottomOffset={20}
+    >
+      <Animated.View style={[styles.screen, style]}>{children}</Animated.View>
+    </KeyboardAwareScrollView>
   );
 }
 

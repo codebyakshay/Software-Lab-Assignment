@@ -4,4 +4,5 @@ export const Storage = createMMKV();
 
 export const storageKeys = {
   HAS_FINISHED_ONBOARDING: "has_finished_onboarding",
+  DEVICE_TOKEN: "device_token",
 } as const;

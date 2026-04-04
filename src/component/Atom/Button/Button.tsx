@@ -1,5 +1,6 @@
 import { Animated, StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
+import { typography } from "@/constant/Typography";
 
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
@@ -30,8 +31,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
+    ...typography.ctaBtn,
   },
 });

@@ -3,6 +3,8 @@ import React from "react";
 import PaginationDots from "@/component/Atom/PaginationDots/PaginationDots";
 import Button from "@/component/Atom/Button/Button";
 import SecondaryBtn from "@/component/Atom/SecondaryBtn/SecondaryBtn";
+import { typography } from "@/constant/Typography";
+import { color } from "@/constant/Color";
 
 interface OnboardingContentCardProps {
   title: string;
@@ -44,7 +46,7 @@ export default function OnboardingContentCard({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: color.backgound,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 32,
@@ -53,21 +55,15 @@ const styles = StyleSheet.create({
     height: "40%",
   },
   title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#1A1A1A",
+    ...typography.onBoarding.title,
     marginBottom: 12,
-    textAlign: "center",
   },
   subtitleContainer: {
     minHeight: "20%",
     maxHeight: "30%",
   },
   subtitle: {
-    fontSize: 14,
-    lineHeight: 21,
-    color: "#6B6B6B",
-    textAlign: "center",
+    ...typography.onBoarding.subtitle,
     marginBottom: 24,
   },
   btnGroup: {

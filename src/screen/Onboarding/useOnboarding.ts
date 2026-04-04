@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { data } from "@/data/Onbaording.data";
 import { RootStackNavigationProp } from "@/navigation/types";
 import { useStore } from "@/store/StoreProvider";
+import { NotificationService } from "@/service/NotificationService";
 
 const { width } = Dimensions.get("window");
 
@@ -21,6 +22,16 @@ export const useOnboarding = () => {
   const flatListRef = useRef<FlatList>(null);
   const scrollOffsetRef = useRef(0);
   const scrollX = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await NotificationService.getDeviceToken();
+      if (token) {
+        onboardingStore.setDeviceToken(token);
+      }
+    };
+    fetchToken();
+  }, [onboardingStore]);
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -35,7 +46,7 @@ export const useOnboarding = () => {
   }).current;
 
   const scrollToNext = () => {
-    if (activeIndex < data.length - 1) {
+    if (activeIndex < data.onboarding.length - 1) {
       flatListRef.current?.scrollToIndex({
         index: activeIndex + 1,
         animated: true,
@@ -61,14 +72,14 @@ export const useOnboarding = () => {
   };
 
   const backgroundColor = scrollX.interpolate({
-    inputRange: data.map((_, i) => i * width),
-    outputRange: data.map((item) => item.backgroundColor),
+    inputRange: data.onboarding.map((_, i) => i * width),
+    outputRange: data.onboarding.map((item) => item.backgroundColor),
     extrapolate: "clamp",
   });
 
   const ctaBackgroundColor = scrollX.interpolate({
-    inputRange: data.map((_, i) => i * width),
-    outputRange: data.map((item) => item.ctaButtonBgColor),
+    inputRange: data.onboarding.map((_, i) => i * width),
+    outputRange: data.onboarding.map((item) => item.ctaButtonBgColor),
     extrapolate: "clamp",
   });
 
@@ -83,6 +94,6 @@ export const useOnboarding = () => {
     onScrollEndDrag,
     backgroundColor,
     ctaBackgroundColor,
-    activeItem: data[activeIndex],
+    activeItem: data.onboarding[activeIndex],
   };
 };
