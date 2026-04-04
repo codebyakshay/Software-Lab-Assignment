@@ -1,5 +1,14 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Modal,
+  FlatList,
+} from "react-native";
 import {
   Tag,
   Smile,
@@ -7,10 +16,12 @@ import {
   MapPin,
   ChevronDown,
   ArrowLeft,
+  X,
 } from "lucide-react-native";
 import { locale } from "@/constant/Strings";
 import { color } from "@/constant/Color";
 import { family } from "@/constant/Typography";
+import { state as stateData } from "@/data/State.data";
 
 import Button from "@/component/Atom/Button/Button";
 import TextInput from "@/component/Atom/TextInput/TextInput";
@@ -49,77 +60,134 @@ export default function SignupStep2({
   prevStep,
   nextStep,
 }: SignupStep2Props) {
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
+
   return (
-    <View style={styles.stepContainer}>
-      <AuthHeader
-        stepIndicator="Signup 2 of 4"
-        screenTitle={locale.signup.farmInfoTitle}
-      />
-
-      <View style={styles.fieldGrp}>
-        <TextInput
-          LeftIcon={Tag}
-          placeholderText={locale.field.businessName}
-          value={businessName}
-          onChangeText={setBusinessName}
+    <>
+      <View style={styles.stepContainer}>
+        <AuthHeader
+          stepIndicator="Signup 2 of 4"
+          screenTitle={locale.signup.farmInfoTitle}
         />
 
-        <TextInput
-          LeftIcon={Smile}
-          placeholderText={locale.field.informalName}
-          value={informalName}
-          onChangeText={setInformalName}
-        />
+        <View style={styles.fieldGrp}>
+          <TextInput
+            LeftIcon={Tag}
+            placeholderText={locale.field.businessName}
+            value={businessName}
+            onChangeText={setBusinessName}
+          />
 
-        <TextInput
-          LeftIcon={Home}
-          placeholderText={locale.field.street}
-          value={streetAddress}
-          onChangeText={setStreetAddress}
-        />
+          <TextInput
+            LeftIcon={Smile}
+            placeholderText={locale.field.informalName}
+            value={informalName}
+            onChangeText={setInformalName}
+          />
 
-        <TextInput
-          LeftIcon={MapPin}
-          placeholderText={locale.field.city}
-          value={city}
-          onChangeText={setCity}
-        />
+          <TextInput
+            LeftIcon={Home}
+            placeholderText={locale.field.street}
+            value={streetAddress}
+            onChangeText={setStreetAddress}
+          />
 
-        <View style={styles.row}>
-          <View style={{ flex: 1.5 }}>
-            <TouchableOpacity style={styles.pickerContainer}>
-              <Text style={styles.pickerText}>
-                {stateValue || locale.field.state}
-              </Text>
-              <ChevronDown
-                size={20}
-                color={color.brand}
-                fill="#000"
-                style={{ transform: [{ rotate: "180deg" }] }}
+          <TextInput
+            LeftIcon={MapPin}
+            placeholderText={locale.field.city}
+            value={city}
+            onChangeText={setCity}
+          />
+
+          <View style={styles.row}>
+            <View style={{ flex: 1.5 }}>
+              <TouchableOpacity
+                style={styles.pickerContainer}
+                onPress={() => setIsModalVisible(true)}
+              >
+                <Text
+                  style={[
+                    styles.pickerText,
+                    stateValue !== "" && { color: "#000" },
+                  ]}
+                >
+                  {stateValue || locale.field.state}
+                </Text>
+                <ChevronDown size={20} color={color.brand} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.halfWidth}>
+              <TextInput
+                placeholderText="Enter Zipcode"
+                value={zipCode}
+                onChangeText={setZipCode}
+                keyboardType="number-pad"
               />
-            </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.halfWidth}>
-            <TextInput
-              placeholderText="Enter Zipcode"
-              value={zipCode}
-              onChangeText={setZipCode}
-              keyboardType="number-pad"
+        </View>
+
+        <View style={styles.footer}>
+          <TouchableOpacity onPress={prevStep} style={styles.backBtn}>
+            <ArrowLeft size={30} color="#000" />
+          </TouchableOpacity>
+
+          <View style={styles.btnWrapper}>
+            <Button title="Continue" bgColor={color.brand} onPress={nextStep} />
+          </View>
+        </View>
+      </View>
+
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableWithoutFeedback onPress={() => setIsModalVisible(false)}>
+            <View style={styles.modalDismissArea} />
+          </TouchableWithoutFeedback>
+          <View style={styles.modalContent}>
+            <View style={styles.handle} />
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select State</Text>
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(false)}
+                style={styles.closeBtn}
+              >
+                <X size={24} color="#000" />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={stateData}
+              keyExtractor={(item) => item.id.toString()}
+              style={styles.listContainer}
+              showsVerticalScrollIndicator={false}
+              initialNumToRender={15}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.stateItem}
+                  onPress={() => {
+                    setStateValue(item.name);
+                    setIsModalVisible(false);
+                  }}
+                >
+                  <Text
+                    style={[
+                      styles.stateItemText,
+                      stateValue === item.name && styles.stateItemTextActive,
+                    ]}
+                  >
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
+              )}
             />
           </View>
         </View>
-      </View>
-
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={prevStep} style={styles.backBtn}>
-          <ArrowLeft size={30} color="#000" />
-        </TouchableOpacity>
-
-        <View style={styles.btnWrapper}>
-          <Button title="Continue" bgColor={color.brand} onPress={nextStep} />
-        </View>
-      </View>
-    </View>
+      </Modal>
+    </>
   );
 }
 
@@ -166,5 +234,64 @@ const styles = StyleSheet.create({
   backBtn: {
     padding: 10,
     marginLeft: -10,
+  },
+  modalOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
+    zIndex: 1000,
+  },
+  modalDismissArea: {
+    flex: 1,
+  },
+  modalContent: {
+    backgroundColor: "#FFF",
+    width: "100%",
+    maxHeight: "80%",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingBottom: 40,
+  },
+  handle: {
+    width: 40,
+    height: 5,
+    backgroundColor: "#E5E5E5",
+    borderRadius: 2.5,
+    alignSelf: "center",
+    marginTop: 12,
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F5F5F5",
+  },
+  modalTitle: {
+    fontFamily: family.bold,
+    fontSize: 20,
+    color: "#000",
+  },
+  closeBtn: {
+    padding: 4,
+  },
+  listContainer: {
+    paddingHorizontal: 24,
+  },
+  stateItem: {
+    paddingVertical: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F5F5F5",
+  },
+  stateItemText: {
+    fontFamily: family.regular,
+    fontSize: 16,
+    color: "#261C12",
+  },
+  stateItemTextActive: {
+    fontFamily: family.bold,
+    color: color.brand,
   },
 });
