@@ -4,22 +4,31 @@
     "slug": "SowLab-Assignment",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/Icons/ios-light.png",
+    "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/Icons/splash-icon-light.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "dark": {
+        "image": "./assets/Icons/splash-icon-dark.png",
+        "backgroundColor": "#000000"
+      }
     },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.codebyakshay.sowLab.assignment",
       "googleServicesFile": "./src/firebase/GoogleService-Info.plist",
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "icon": {
+        "light": "./assets/Icons/ios-light.png",
+        "dark": "./assets/Icons/ios-dark.png",
+        "tinted": "./assets/Icons/ios-tinted.png"
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/Icons/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "predictiveBackGestureEnabled": false,
