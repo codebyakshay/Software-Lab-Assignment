@@ -63,6 +63,7 @@ export default function SignupStep3({
             title={locale.submit}
             bgColor={color.brand}
             onPress={nextStep}
+            disabled={!proofFile}
           />
         </View>
       </View>

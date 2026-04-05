@@ -11,7 +11,7 @@ import ScreenWrapper from "@/component/Molecule/ScreenWrapper/ScreenWrapper";
 import AuthHeader from "@/component/Molecule/AuthHeader/AuthHeader";
 
 export default function Otp() {
-  const { otp, setOtp, handleSubmit, handleResendCode, navigateToLogin } =
+  const { otp, setOtp, handleSubmit, handleResendCode, navigateToLogin, isLoading } =
     useOtp();
 
   return (
@@ -35,6 +35,7 @@ export default function Otp() {
               title={locale.submit}
               bgColor={color.brand}
               onPress={handleSubmit}
+              isLoading={isLoading}
             />
             
             <TouchableOpacity 

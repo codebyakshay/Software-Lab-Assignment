@@ -24,6 +24,7 @@ const Login = observer(function Login() {
     handleSocialLogin,
     navigateToSignup,
     navigateToForgotPassword,
+    isLoading,
   } = useLogin();
 
   return (
@@ -61,7 +62,12 @@ const Login = observer(function Login() {
           </View>
 
           <View style={styles.btnGroupContainer}>
-            <Button title="Login" bgColor={color.brand} onPress={handleLogin} />
+            <Button
+              title="Login"
+              bgColor={color.brand}
+              onPress={handleLogin}
+              isLoading={isLoading}
+            />
           </View>
 
           <SocialAuthGroup

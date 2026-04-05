@@ -4,10 +4,13 @@ import { useNavigation } from "@react-navigation/native";
 import { RootStackNavigationProp } from "@/navigation/types";
 import { AuthService } from "@/service/AuthService";
 import { useStore } from "@/store/StoreProvider";
+import { RegisterRequest } from "@/types/auth";
+import { Storage, storageKeys } from "@/service/Storage";
+import * as DocumentPicker from "expo-document-picker";
 
 export function useSignup() {
   const navigation = useNavigation<RootStackNavigationProp>();
-  const { onboardingStore } = useStore();
+  const { onboardingStore, userStore } = useStore();
 
   const [step, setStep] = useState(1);
 
@@ -57,9 +60,21 @@ export function useSignup() {
     });
   };
 
-  const handleAttachProof = () => {
-    // Mock file attachment
-    setProofFile("usda_registration.pdf");
+  const handleAttachProof = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "application/pdf",
+        copyToCacheDirectory: true,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const file = result.assets[0];
+        setProofFile(file.name);
+      }
+    } catch (error) {
+      console.error("Error picking document:", error);
+      Alert.alert("Error", "Could not pick the document. Please try again.");
+    }
   };
 
   const nextStep = () => {
@@ -80,14 +95,68 @@ export function useSignup() {
 
   const handleSignup = async () => {
     try {
-      const deviceToken = onboardingStore.deviceToken;
-      console.log("--- Signup: Attempting Final Registration ---");
-      // TODO: Connect to AuthService.register(formData)
-      // Transition to Step 5 (Done)
-      setStep(5);
+      const deviceToken =
+        onboardingStore.deviceToken ||
+        Storage.getString(storageKeys.DEVICE_TOKEN) ||
+        "";
+
+      // Transform Business Hours keys
+      const dayMap: Record<string, string> = {
+        M: "mon",
+        T: "tue",
+        W: "wed",
+        Th: "thu",
+        F: "fri",
+        S: "sat",
+        Su: "sun",
+      };
+
+      const transformedHours: any = {};
+      Object.entries(selectedHours).forEach(([day, slots]) => {
+        const apiKey = dayMap[day];
+        if (apiKey) {
+          transformedHours[apiKey] = slots;
+        }
+      });
+
+      const signupData: RegisterRequest = {
+        full_name: fullName,
+        email: email,
+        phone: phone,
+        password: password,
+        role: "farmer",
+        business_name: businessName,
+        informal_name: informalName,
+        address: streetAddress,
+        city: city,
+        state: stateValue,
+        zip_code: parseInt(zipCode, 10) || 0,
+        registration_proof: proofFile || "my_proof.pdf",
+        business_hours: transformedHours,
+        device_token: deviceToken,
+        type: "email",
+        social_id: "",
+      };
+
+      const response = await AuthService.register(signupData);
+
+      if (response.token) {
+        // Store in MMKV
+        Storage.set(storageKeys.AUTH_TOKEN, response.token);
+
+        // Update UserStore
+        userStore.setUser({
+          name: fullName,
+          email: email,
+          token: response.token,
+        });
+
+        // Transition to Step 5 (Done)
+        setStep(5);
+      }
     } catch (error: any) {
       Alert.alert(
-        "Error",
+        "Registration Error",
         error.message || "An error occurred during registration.",
       );
     }

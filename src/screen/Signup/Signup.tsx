@@ -3,11 +3,9 @@ import { StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { observer } from "mobx-react-lite";
 import { color } from "@/constant/Color";
-
-import ScreenWrapper from "@/component/Molecule/ScreenWrapper/ScreenWrapper";
 import { useSignup } from "./useSignup";
+import ScreenWrapper from "@/component/Molecule/ScreenWrapper/ScreenWrapper";
 
-// Import Step Components
 import SignupStep1 from "./components/SignupStep1";
 import SignupStep2 from "./components/SignupStep2";
 import SignupStep3 from "./components/SignupStep3";
@@ -46,11 +44,7 @@ const Signup = observer(function Signup() {
           )}
 
           {step === 2 && (
-            <SignupStep2
-              {...farm}
-              prevStep={prevStep}
-              nextStep={nextStep}
-            />
+            <SignupStep2 {...farm} prevStep={prevStep} nextStep={nextStep} />
           )}
 
           {step === 3 && (
@@ -69,9 +63,7 @@ const Signup = observer(function Signup() {
             />
           )}
 
-          {step === 5 && (
-            <SignupDone onDone={handleFinish} />
-          )}
+          {step === 5 && <SignupDone onDone={handleFinish} />}
         </ScrollView>
       </SafeAreaView>
     </ScreenWrapper>

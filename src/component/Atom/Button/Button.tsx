@@ -1,4 +1,10 @@
-import { Animated, StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  Animated,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { typography } from "@/constant/Typography";
 
@@ -9,16 +15,35 @@ interface ButtonProps {
   title: string;
   bgColor: string | Animated.AnimatedInterpolation<string | number>;
   onPress?: () => void;
+  isLoading?: boolean;
+  disabled?: boolean;
 }
 
-export default function Button({ title, bgColor, onPress }: ButtonProps) {
+export default function Button({
+  title,
+  bgColor,
+  onPress,
+  isLoading,
+  disabled,
+}: ButtonProps) {
+  const isDisabled = isLoading || disabled;
+
   return (
     <AnimatedTouchableOpacity
-      style={[styles.button, { backgroundColor: bgColor as any }]}
+      style={[
+        styles.button,
+        { backgroundColor: bgColor as any },
+        isDisabled && styles.disabledButton,
+      ]}
       activeOpacity={0.8}
       onPress={onPress}
+      disabled={isDisabled}
     >
-      <Text style={styles.text}>{title}</Text>
+      {isLoading ? (
+        <ActivityIndicator color="#fff" />
+      ) : (
+        <Text style={styles.text}>{title}</Text>
+      )}
     </AnimatedTouchableOpacity>
   );
 }
@@ -29,6 +54,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 100,
     alignItems: "center",
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
   text: {
     ...typography.ctaBtn,

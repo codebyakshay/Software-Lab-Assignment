@@ -1,10 +1,10 @@
 import { Animated, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { typography } from "@/constant/Typography";
+import { color } from "@/constant/Color";
 import PaginationDots from "@/component/Atom/PaginationDots/PaginationDots";
 import Button from "@/component/Atom/Button/Button";
 import SecondaryBtn from "@/component/Atom/SecondaryBtn/SecondaryBtn";
-import { typography } from "@/constant/Typography";
-import { color } from "@/constant/Color";
 
 interface OnboardingContentCardProps {
   title: string;
