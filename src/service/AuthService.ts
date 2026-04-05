@@ -163,12 +163,10 @@ export class AuthService {
     data: ForgotPasswordRequest,
   ): Promise<ForgotPasswordResponse> {
     try {
-      console.log("Forgot Password Request:", data);
       const response = await api.post<any, ForgotPasswordResponse>(
         ENDPOINT.FORGOT_PASSWORD,
         data,
       );
-      console.log("Forgot Password Response:", response);
 
       // Handle both string "false" and boolean false success from the API
       if (response.success === "false" || response.success === false) {
@@ -187,12 +185,10 @@ export class AuthService {
    */
   static async verifyOtp(data: VerifyOtpRequest): Promise<VerifyOtpResponse> {
     try {
-      console.log("Verify OTP Request:", data);
       const response = await api.post<any, VerifyOtpResponse>(
         ENDPOINT.VERIFY_OTP,
         data,
       );
-      console.log("Verify OTP Response:", response);
 
       // Handle both string "false" and boolean false success from the API
       if (response.success === "false" || response.success === false) {
@@ -213,12 +209,10 @@ export class AuthService {
     data: ResetPasswordRequest,
   ): Promise<ResetPasswordResponse> {
     try {
-      console.log("Reset Password Request:", data);
       const response = await api.post<any, ResetPasswordResponse>(
         ENDPOINT.RESET_PASSWORD,
         data,
       );
-      console.log("Reset Password Response:", response);
 
       // Handle both string "false" and boolean false success from the API
       if (response.success === "false" || response.success === false) {

@@ -12,10 +12,15 @@ export function useLogin() {
   const { onboardingStore, userStore } = useStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     try {
-      const deviceToken = onboardingStore.deviceToken || Storage.getString(storageKeys.DEVICE_TOKEN) || "";
+      setIsLoading(true);
+      const deviceToken =
+        onboardingStore.deviceToken ||
+        Storage.getString(storageKeys.DEVICE_TOKEN) ||
+        "";
 
       if (!email || !password) {
         Alert.alert("Error", "Please fill in all fields.");
@@ -28,29 +33,32 @@ export function useLogin() {
         role: "farmer",
         device_token: deviceToken,
         type: "email",
-        social_id: ""
+        social_id: "",
       };
 
-      console.log("--- Login: Attempting Login ---", loginData);
-      
       const response = await AuthService.login(loginData);
-      
+
       if (response.token) {
         // Store in MMKV
         Storage.set(storageKeys.AUTH_TOKEN, response.token);
-        
+
         // Update UserStore (We don't have the name from login response, so we'll use a placeholder or split email)
         userStore.setUser({
-          name: email.split('@')[0], // Fallback name
+          name: email.split("@")[0], // Fallback name
           email: email,
-          token: response.token
+          token: response.token,
         });
 
         // Navigate to Home
         navigation.navigate("Home" as any);
       }
     } catch (error: any) {
-      Alert.alert("Login Error", error.message || "An error occurred during login.");
+      Alert.alert(
+        "Login Error",
+        error.message || "An error occurred during login.",
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,5 +99,6 @@ export function useLogin() {
     handleSocialLogin,
     navigateToSignup,
     navigateToForgotPassword,
+    isLoading,
   };
 }

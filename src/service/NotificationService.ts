@@ -14,10 +14,6 @@ export class NotificationService {
    */
   static async getDeviceToken(): Promise<string | null> {
     try {
-      console.log(
-        "--- NotificationService: Starting Token Generation (Modular API) ---",
-      );
-
       const messaging = getMessaging();
 
       // 1. Request permissions (Required for iOS)
@@ -33,16 +29,10 @@ export class NotificationService {
         return null;
       }
 
-      console.log("--- NotificationService: Permission granted ---");
-
       // 3. Get the token
       const token = await getToken(messaging);
 
       if (token) {
-        console.log(
-          "--- NotificationService: Device Token Generated Successfully ---",
-        );
-        console.log("TOKEN:", token);
         return token;
       } else {
         console.warn(

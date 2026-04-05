@@ -52,9 +52,13 @@ export const useOnboarding = () => {
         animated: true,
       });
     } else {
-      onboardingStore.completeOnboarding();
-      navigation.navigate("Login");
+      goToLogin();
     }
+  };
+
+  const goToLogin = () => {
+    onboardingStore.completeOnboarding();
+    navigation.navigate("Login");
   };
 
   const onScrollBeginDrag = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -95,5 +99,6 @@ export const useOnboarding = () => {
     backgroundColor,
     ctaBackgroundColor,
     activeItem: data.onboarding[activeIndex],
+    goToLogin,
   };
 };

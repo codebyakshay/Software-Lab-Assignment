@@ -6,6 +6,7 @@ import { AuthService } from "@/service/AuthService";
 import { useStore } from "@/store/StoreProvider";
 import { RegisterRequest } from "@/types/auth";
 import { Storage, storageKeys } from "@/service/Storage";
+import * as DocumentPicker from "expo-document-picker";
 
 export function useSignup() {
   const navigation = useNavigation<RootStackNavigationProp>();
@@ -59,9 +60,21 @@ export function useSignup() {
     });
   };
 
-  const handleAttachProof = () => {
-    // Mock file attachment
-    setProofFile("usda_registration.pdf");
+  const handleAttachProof = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "application/pdf",
+        copyToCacheDirectory: true,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const file = result.assets[0];
+        setProofFile(file.name);
+      }
+    } catch (error) {
+      console.error("Error picking document:", error);
+      Alert.alert("Error", "Could not pick the document. Please try again.");
+    }
   };
 
   const nextStep = () => {
@@ -86,8 +99,6 @@ export function useSignup() {
         onboardingStore.deviceToken ||
         Storage.getString(storageKeys.DEVICE_TOKEN) ||
         "";
-
-      console.log("--- Signup: Transforming Data for API ---");
 
       // Transform Business Hours keys
       const dayMap: Record<string, string> = {
@@ -126,8 +137,6 @@ export function useSignup() {
         type: "email",
         social_id: "",
       };
-
-      console.log("--- Signup: Attempting Final Registration ---", signupData);
 
       const response = await AuthService.register(signupData);
 

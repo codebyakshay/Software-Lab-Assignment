@@ -3,10 +3,10 @@ import { Animated, StyleSheet, View } from "react-native";
 import { observer } from "mobx-react-lite";
 import { data } from "@/data/Onbaording.data";
 import { locale } from "@/constant/Strings";
+import { useOnboarding } from "./useOnboarding";
 import IllustrationContainer from "@/component/Molecule/IllustrationContainer/IllustrationContainer";
 import OnboardingContentCard from "@/component/Molecule/OnboardingContentCard/OnboardingContentCard";
 import ScreenWrapper from "@/component/Molecule/ScreenWrapper/ScreenWrapper";
-import { useOnboarding } from "./useOnboarding";
 
 const Onboarding = observer(function Onboarding() {
   const {
@@ -21,6 +21,7 @@ const Onboarding = observer(function Onboarding() {
     backgroundColor,
     ctaBackgroundColor,
     activeItem,
+    goToLogin,
   } = useOnboarding();
 
   return (
@@ -57,6 +58,7 @@ const Onboarding = observer(function Onboarding() {
         ctaBgColor={ctaBackgroundColor}
         secondaryBtnTitle={locale.onBoarding.secondaryBtnTitle}
         onCtaPress={scrollToNext}
+        onSecondaryPress={goToLogin}
       />
     </ScreenWrapper>
   );
