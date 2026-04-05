@@ -87,6 +87,16 @@ export function useSignup() {
         Alert.alert("Error", "Passwords do not match.");
         return;
       }
+    } else if (step === 2) {
+      if (!businessName || !streetAddress || !city || !stateValue || !zipCode) {
+        Alert.alert("Error", "Please fill in all farm information.");
+        return;
+      }
+    } else if (step === 3) {
+      if (!proofFile) {
+        Alert.alert("Error", "Please attach a registration proof.");
+        return;
+      }
     }
     setStep((prev) => prev + 1);
   };
@@ -98,7 +108,7 @@ export function useSignup() {
       const deviceToken =
         onboardingStore.deviceToken ||
         Storage.getString(storageKeys.DEVICE_TOKEN) ||
-        "";
+        "some-mock-device-token-for-testing"; // Fallback for simulator
 
       // Transform Business Hours keys
       const dayMap: Record<string, string> = {
@@ -111,7 +121,17 @@ export function useSignup() {
         Su: "sun",
       };
 
-      const transformedHours: any = {};
+      // Ensure all 7 days are present in the payload (some backends require full schema)
+      const transformedHours: any = {
+        mon: [],
+        tue: [],
+        wed: [],
+        thu: [],
+        fri: [],
+        sat: [],
+        sun: [],
+      };
+
       Object.entries(selectedHours).forEach(([day, slots]) => {
         const apiKey = dayMap[day];
         if (apiKey) {
@@ -135,8 +155,10 @@ export function useSignup() {
         business_hours: transformedHours,
         device_token: deviceToken,
         type: "email",
-        social_id: "",
+        social_id: deviceToken, // Using device token as social_id for email type as per user example
       };
+
+      console.log("--- DEBUG: Sending Signup Data ---", JSON.stringify(signupData, null, 2));
 
       const response = await AuthService.register(signupData);
 
@@ -155,15 +177,19 @@ export function useSignup() {
         setStep(5);
       }
     } catch (error: any) {
+      console.warn("--- Registration API Error Details ---", error.response?.data || error.message);
       Alert.alert(
         "Registration Error",
-        error.message || "An error occurred during registration.",
+        error.response?.data?.message || error.message || "An error occurred during registration.",
       );
     }
   };
 
   const handleFinish = () => {
-    navigation.navigate("Login");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Home" }],
+    });
   };
 
   const handleSocialLogin = async (id: number) => {
