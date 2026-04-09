@@ -17,6 +17,7 @@ interface SignupStep4Props {
   toggleTimeSlot: (slot: string) => void;
   prevStep: () => void;
   handleSignup: () => void;
+  isLoading?: boolean;
 }
 
 export default function SignupStep4({
@@ -28,6 +29,7 @@ export default function SignupStep4({
   toggleTimeSlot,
   prevStep,
   handleSignup,
+  isLoading,
 }: SignupStep4Props) {
   return (
     <View style={styles.stepContainer}>
@@ -91,7 +93,12 @@ export default function SignupStep4({
           <ArrowLeft size={30} color="#000" />
         </TouchableOpacity>
         <View style={styles.btnWrapper}>
-          <Button title="Signup" bgColor={color.brand} onPress={handleSignup} />
+          <Button
+            title="Signup"
+            bgColor={color.brand}
+            onPress={handleSignup}
+            isLoading={isLoading}
+          />
         </View>
       </View>
     </View>

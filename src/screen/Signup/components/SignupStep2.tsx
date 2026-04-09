@@ -42,6 +42,7 @@ interface SignupStep2Props {
   setZipCode: (text: string) => void;
   prevStep: () => void;
   nextStep: () => void;
+  isLoading?: boolean;
 }
 
 export default function SignupStep2({
@@ -59,6 +60,7 @@ export default function SignupStep2({
   setZipCode,
   prevStep,
   nextStep,
+  isLoading,
 }: SignupStep2Props) {
   const [isModalVisible, setIsModalVisible] = React.useState(false);
 
@@ -133,7 +135,12 @@ export default function SignupStep2({
           </TouchableOpacity>
 
           <View style={styles.btnWrapper}>
-            <Button title="Continue" bgColor={color.brand} onPress={nextStep} />
+            <Button
+              title="Continue"
+              bgColor={color.brand}
+              onPress={nextStep}
+              isLoading={isLoading}
+            />
           </View>
         </View>
       </View>

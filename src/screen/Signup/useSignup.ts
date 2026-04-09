@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Alert } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { RootStackNavigationProp } from "@/navigation/types";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import {
+  RootStackNavigationProp,
+  RootStackParamList,
+} from "@/navigation/types";
 import { AuthService } from "@/service/AuthService";
 import { useStore } from "@/store/StoreProvider";
 import { RegisterRequest } from "@/types/auth";
@@ -10,16 +13,25 @@ import * as DocumentPicker from "expo-document-picker";
 
 export function useSignup() {
   const navigation = useNavigation<RootStackNavigationProp>();
+  const route = useRoute<RouteProp<RootStackParamList, "Signup">>();
   const { onboardingStore, userStore } = useStore();
 
+  const initialData = route.params?.initialData;
+
   const [step, setStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Step 1: Welcome
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState(initialData?.fullName || "");
+  const [email, setEmail] = useState(initialData?.email || "");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [reEnterPassword, setReEnterPassword] = useState("");
+
+  const [socialId, setSocialId] = useState(initialData?.social_id || "");
+  const [signupType, setSignupType] = useState<
+    "email" | "google" | "apple" | "facebook"
+  >(initialData?.type || "email");
 
   // Step 2: Farm Info
   const [businessName, setBusinessName] = useState("");
@@ -105,6 +117,7 @@ export function useSignup() {
 
   const handleSignup = async () => {
     try {
+      setIsLoading(true);
       const deviceToken =
         onboardingStore.deviceToken ||
         Storage.getString(storageKeys.DEVICE_TOKEN) ||
@@ -154,11 +167,14 @@ export function useSignup() {
         registration_proof: proofFile || "my_proof.pdf",
         business_hours: transformedHours,
         device_token: deviceToken,
-        type: "email",
-        social_id: deviceToken, // Using device token as social_id for email type as per user example
+        type: signupType,
+        social_id: signupType === "email" ? deviceToken : socialId,
       };
 
-      console.log("--- DEBUG: Sending Signup Data ---", JSON.stringify(signupData, null, 2));
+      console.log(
+        "--- DEBUG: Sending Signup Data ---",
+        JSON.stringify(signupData, null, 2),
+      );
 
       const response = await AuthService.register(signupData);
 
@@ -177,11 +193,18 @@ export function useSignup() {
         setStep(5);
       }
     } catch (error: any) {
-      console.warn("--- Registration API Error Details ---", error.response?.data || error.message);
+      console.warn(
+        "--- Registration API Error Details ---",
+        error.response?.data || error.message,
+      );
       Alert.alert(
         "Registration Error",
-        error.response?.data?.message || error.message || "An error occurred during registration.",
+        error.response?.data?.message ||
+          error.message ||
+          "An error occurred during registration.",
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -194,26 +217,88 @@ export function useSignup() {
 
   const handleSocialLogin = async (id: number) => {
     try {
+      setIsLoading(true);
       let result;
+      let type: "google" | "apple" | "facebook";
+
       if (id === 1) {
         result = await AuthService.signInWithGoogle();
+        type = "google";
       } else if (id === 2) {
         result = await AuthService.signInWithApple();
+        type = "apple";
       } else {
         Alert.alert("Info", "Facebook login is not implemented yet.");
+        setIsLoading(false);
         return;
       }
 
       if (result) {
-        Alert.alert("Success", `Signed in as ${result.user.email}`);
+        const deviceToken =
+          onboardingStore.deviceToken ||
+          Storage.getString(storageKeys.DEVICE_TOKEN) ||
+          "some-mock-device-token";
+
+        const loginData: any = {
+          email: result.user.email || "",
+          role: "farmer",
+          device_token: deviceToken,
+          type: type,
+          social_id: result.user.uid,
+        };
+
+        try {
+          const response = await AuthService.login(loginData);
+
+          if (response.token) {
+            // Store in MMKV
+            Storage.set(storageKeys.AUTH_TOKEN, response.token);
+
+            // Update UserStore
+            userStore.setUser({
+              name:
+                result.user.displayName ||
+                result.user.email?.split("@")[0] ||
+                "User",
+              email: result.user.email || "",
+              token: response.token,
+            });
+
+            // Navigate to Home
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Home" }],
+            });
+          }
+        } catch (error: any) {
+          const errorMessage = error.message || "";
+          if (errorMessage.includes("Account does not exist")) {
+            // This is the "Magic" part for Signup screen
+            // If they click Google on Signup and account doesn't exist, we just pre-fill!
+            setFullName(result.user.displayName || "");
+            setEmail(result.user.email || "");
+            setSocialId(result.user.uid);
+            setSignupType(type);
+
+            Alert.alert(
+              "Google Linked",
+              "We've imported your name and email from Google. Please continue to set up your farm details.",
+              [{ text: "Continue", onPress: () => setStep(2) }],
+            );
+          } else {
+            throw error; // Rethrow for outer catch
+          }
+        }
       }
     } catch (error: any) {
-      if (error.code !== "-1") {
+      if (error.code !== "-1" && error.code !== "auth/sign-in-cancelled") {
         Alert.alert(
           "Error",
           error.message || "An error occurred during sign in.",
         );
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -228,6 +313,7 @@ export function useSignup() {
     handleSignup,
     handleFinish,
     handleSocialLogin,
+    isLoading,
 
     // Step 1 Data
     credentials: {

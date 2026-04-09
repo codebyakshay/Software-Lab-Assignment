@@ -24,6 +24,7 @@ interface SignupStep1Props {
   handleSocialLogin: (id: number) => void;
   navigateToLogin: () => void;
   nextStep: () => void;
+  isLoading?: boolean;
 }
 
 export default function SignupStep1({
@@ -40,6 +41,7 @@ export default function SignupStep1({
   handleSocialLogin,
   navigateToLogin,
   nextStep,
+  isLoading,
 }: SignupStep1Props) {
   return (
     <View style={styles.stepContainer}>
@@ -102,7 +104,12 @@ export default function SignupStep1({
         </TouchableOpacity>
 
         <View style={styles.btnWrapper}>
-          <Button title="Continue" bgColor={color.brand} onPress={nextStep} />
+          <Button
+            title="Continue"
+            bgColor={color.brand}
+            onPress={nextStep}
+            isLoading={isLoading}
+          />
         </View>
       </View>
     </View>

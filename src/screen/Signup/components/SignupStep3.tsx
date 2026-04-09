@@ -14,6 +14,7 @@ interface SignupStep3Props {
   handleAttachProof: () => void;
   prevStep: () => void;
   nextStep: () => void;
+  isLoading?: boolean;
 }
 
 export default function SignupStep3({
@@ -22,6 +23,7 @@ export default function SignupStep3({
   handleAttachProof,
   prevStep,
   nextStep,
+  isLoading,
 }: SignupStep3Props) {
   return (
     <View style={styles.stepContainer}>
@@ -64,6 +66,7 @@ export default function SignupStep3({
             bgColor={color.brand}
             onPress={nextStep}
             disabled={!proofFile}
+            isLoading={isLoading}
           />
         </View>
       </View>

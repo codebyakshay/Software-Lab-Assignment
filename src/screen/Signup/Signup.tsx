@@ -25,6 +25,7 @@ const Signup = observer(function Signup() {
     farm,
     verification,
     hours,
+    isLoading,
   } = useSignup();
 
   return (
@@ -40,11 +41,17 @@ const Signup = observer(function Signup() {
               handleSocialLogin={handleSocialLogin}
               navigateToLogin={navigateToLogin}
               nextStep={nextStep}
+              isLoading={isLoading}
             />
           )}
 
           {step === 2 && (
-            <SignupStep2 {...farm} prevStep={prevStep} nextStep={nextStep} />
+            <SignupStep2
+              {...farm}
+              prevStep={prevStep}
+              nextStep={nextStep}
+              isLoading={isLoading}
+            />
           )}
 
           {step === 3 && (
@@ -52,6 +59,7 @@ const Signup = observer(function Signup() {
               {...verification}
               prevStep={prevStep}
               nextStep={nextStep}
+              isLoading={isLoading}
             />
           )}
 
@@ -60,6 +68,7 @@ const Signup = observer(function Signup() {
               {...hours}
               prevStep={prevStep}
               handleSignup={handleSignup}
+              isLoading={isLoading}
             />
           )}
 
